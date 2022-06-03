@@ -51,11 +51,31 @@ cl_base* cl_base::search(std::string wanted){
 	}
 	return nullptr;
 }
-cl_base* cl_base::findIP(std::string wanted){ // /o/o1/o2
-	std::string cur_IP;
-	int s = wanted.size();
-	cl_base* root;
-	cl_base* predok;
-	cur_IP = wanted.substr(1, s - 1); //игнорируем первую /
-	return 0;
-};
+cl_base* cl_base::findIP(std::string wanted) {
+	std::string cur_predok_name = "";
+	int f = 0; //flag
+	cl_base* cur_predok = this;
+	for (int i = 1; i < wanted.size(); i++) {
+		if (wanted[i] == '/') {
+			f = 1;
+		}
+		else {
+			cur_predok_name += wanted[i];
+		}
+		if (i == wanted.size()-1) { //последнее слово
+			f = 1;
+		}
+		if (f==1){
+			cur_predok = cur_predok->search(cur_predok_name);
+			if (cur_predok == nullptr) {
+				std::cout << "The head object " << wanted << " is not found\n";
+				return nullptr;
+			}
+			cur_predok_name = "";
+			f = 0;
+		}
+			
+	}
+	return cur_predok;
+}
+
