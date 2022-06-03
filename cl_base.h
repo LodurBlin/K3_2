@@ -10,7 +10,6 @@ class cl_base {
 
 public:
 	cl_base* p_predok{}; //указатель на голову
-
 	std::vector<std::unique_ptr<cl_base>> spinogrizi; //массив указателей
 
 	cl_base(std::string name, cl_base* p_predok = 0) : ob_name{ name }, p_predok{ p_predok } {}; //конструктор
@@ -35,6 +34,6 @@ public:
 	cl_base* findIP(std::vector<std::string> IP);//метод получения указателя на любой объект в составе дерева иерархии объектов согласно пути (координаты)
 
 	void questions();
-	cl_base* define(std::string IP, std::string cur);
+	std::string define(std::string IP, std::string cur);
 };
 #endif
