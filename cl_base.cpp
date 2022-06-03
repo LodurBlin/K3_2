@@ -1,4 +1,5 @@
 #include "cl_base.h"
+#include "Path.h"
 #include <iostream>
 #include <cassert>
 #include <algorithm>
@@ -21,15 +22,16 @@ void cl_base::print_hierarchy(int offset) {
 	}
 }
 
-cl_base* cl_base::kto_otez() { 
+
+cl_base* cl_base::kto_otez() {
 	return p_predok;
 }
-std::unique_ptr<cl_base> cl_base::uproot(){
+std::unique_ptr<cl_base> cl_base::uproot() {
 	assert(p_predok);
 	auto& ch = p_predok->spinogrizi;
 	std::unique_ptr<cl_base> a = nullptr;
-	for (auto& spin:ch){
-		if(this==spin.get()){
+	for (auto& spin : ch) {
+		if (this == spin.get()) {
 			std::swap(a, spin);
 		}
 	}
@@ -37,45 +39,57 @@ std::unique_ptr<cl_base> cl_base::uproot(){
 	return a;
 }
 
-void cl_base::move_to(cl_base* destination){
-	destination -> add_spinogriz(uproot());
+void cl_base::move_to(cl_base* destination) {
+	destination->add_spinogriz(uproot());
 }
 
-cl_base* cl_base::search(std::string wanted){
-	if(this->get_name()==wanted){
+cl_base* cl_base::search(std::string wanted) {
+	if (this->get_name() == wanted) {
 		return this;
 	}
-	for (const auto& spin : spinogrizi){
+	for (const auto& spin : spinogrizi) {
 		auto res = spin->search(wanted);
-		if(res) return res;
+		if (res) return res;
 	}
 	return nullptr;
 }
-cl_base* cl_base::findIP(std::string wanted) {
-	std::string cur_predok_name = "";
-	int f = 0; //flag
-	cl_base* cur_predok = this;
-	for (int i = 1; i < wanted.size(); i++) {
-		if (wanted[i] == '/') {
-			f = 1;
-		}
-		else {
-			cur_predok_name += wanted[i];
-		}
-		if (i == wanted.size()-1) { //последнее слово
-			f = 1;
-		}
-		if (f==1){
-			cur_predok = cur_predok->search(cur_predok_name);
-			if (cur_predok == nullptr) {
-				std::cout << "The head object " << wanted << " is not found\n";
-				return nullptr;
-			}
-			cur_predok_name = "";
-			f = 0;
-		}
-			
-	}
+
+cl_base* cl_base::findIP(std::vector<std::string> IP) {
+	cl_base* cur_predok;
+	cur_predok = search(IP[0]);
+	cur_predok = cur_predok->search(IP.back());
 	return cur_predok;
 }
 
+void cl_base::questions() {
+	std::string command;
+	std::string cur_obj;
+	do {
+		std::cin >> command;
+		if (command == "END") {
+			break;
+		}
+		else if (command == "FIND") {
+			std::cin >> command;
+			define(command, cur_obj);
+		}
+		else if (command == "SET") {
+			std::cin >> command;
+			define(command, cur_obj);
+		}
+	} while (true);
+		
+}
+
+cl_base* cl_base::define(std::string IP, std::string cur) {
+	if (IP == "/") {
+		return nullptr; //корень
+	}
+	else if (IP==".") {
+		return (search(cur));
+	}
+	else {
+		std::string object = (findIP(Path(this->get_name()))->get_name());
+		return (search(object));
+	}
+}
