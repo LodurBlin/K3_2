@@ -72,24 +72,30 @@ void cl_base::questions() {
 		else if (command == "FIND") {
 			std::cin >> command;
 			define(command, cur_obj);
+			
 		}
 		else if (command == "SET") {
 			std::cin >> command;
-			define(command, cur_obj);
+			cur_obj = define(command, cur_obj);
+			
 		}
 	} while (true);
 		
 }
 
-cl_base* cl_base::define(std::string IP, std::string cur) {
+std::string cl_base::define(std::string IP, std::string cur) {
 	if (IP == "/") {
 		return nullptr; //корень
 	}
-	else if (IP==".") {
-		return (search(cur));
+	else if (IP==".") { //нынешний
+		return (cur);
 	}
-	else {
-		std::string object = (findIP(Path(this->get_name()))->get_name());
-		return (search(object));
+	else if (IP[1]=='/'){//от корня
+		
+		return (findIP(Path(IP)->get_name());
+	} 
+	else if (IP[0]!='/'){ //от текущего
+		IP.insert(0, cur, "/");
+		return(findIP(Path(IP)->get_name());
 	}
 }
