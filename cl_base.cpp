@@ -57,45 +57,7 @@ cl_base* cl_base::search(std::string wanted) {
 cl_base* cl_base::findIP(std::vector<std::string> IP) {
 	cl_base* cur_predok;
 	cur_predok = search(IP[0]);
-	cur_predok = cur_predok->search(IP.back());
+	if (cur_predok) return cur_predok->search(IP.back());
 	return cur_predok;
 }
 
-void cl_base::questions() {
-	std::string command;
-	std::string cur_obj;
-	do {
-		std::cin >> command;
-		if (command == "END") {
-			break;
-		}
-		else if (command == "FIND") {
-			std::cin >> command;
-			define(command, cur_obj);
-			
-		}
-		else if (command == "SET") {
-			std::cin >> command;
-			cur_obj = define(command, cur_obj);
-			
-		}
-	} while (true);
-		
-}
-
-std::string cl_base::define(std::string IP, std::string cur) {
-	if (IP == "/") {
-		return nullptr; //корень
-	}
-	else if (IP==".") { //нынешний
-		return (cur);
-	}
-	else if (IP[1]=='/'){//от корня
-		
-		return (findIP(Path(IP)->get_name());
-	} 
-	else if (IP[0]!='/'){ //от текущего
-		IP.insert(0, cur, "/");
-		return(findIP(Path(IP)->get_name());
-	}
-}
