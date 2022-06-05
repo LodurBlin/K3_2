@@ -14,6 +14,7 @@ void cl_app::derevo() {
 	set_name(root_name);
 	cl_base* cur_predok = this;
 	cl_base* root = this;
+	main_root = root_name;
 	do {
 		string IP, spinogriz;
 		int clas;
@@ -29,6 +30,7 @@ void cl_app::derevo() {
 			cur_predok = findIP(Path(IP));
 			if (cur_predok == 0) {
 				std::cout << "The head object " << IP << " is not found\n";
+				main_root = "";
 				break;
 			}
 		}
@@ -53,4 +55,63 @@ void cl_app::derevo() {
 	} while (true);
 
 
+}
+
+void cl_app::questions() {
+	std::string command;
+	std::string cur_obj;
+	std::string object;
+	std::string coord;
+	do {
+		std::cin >> command;
+		
+		if (command == "END") {
+			break;
+		}
+		else if (command == "FIND") {
+			std::cin >> coord;
+			object = define(coord, cur_obj);
+			if (object != "") {
+				std::cout  << coord << "    Object name: " << object << "\n";
+			}
+			else {
+				std::cout << coord << "    Object is not found" << "\n";
+			}
+		}
+		else if (command == "SET") {
+			std::cin >> coord;
+			object = define(coord, cur_obj);
+			if (object != "") {
+				cur_obj = object;
+				std::cout << "Object is set : " << cur_obj << "\n";
+			}
+			else {
+				std::cout << "Object is not found: " << cur_obj << " " << coord << "\n";
+			}
+		}
+	} while (true);
+
+}
+
+std::string cl_app::define(std::string IP, std::string cur) {
+	if (IP == "/") {
+		return main_root; //корень
+	}
+	else if (IP == ".") { //? нынешний
+		return cur;
+	}
+	else if (IP[1]=='/' and IP[0]=='/') { // от корневого
+		
+		return (findIP(Path(IP))->get_name());
+	} 
+	else if (IP[0] != '/') { // относительная координата от нынешней 
+		if (cur != "") {
+			IP.insert(0, (cur + '/'));
+			return(findIP(Path(IP))->get_name());
+		} 
+		return "";
+	}
+	else { //абсолютная 
+		return(findIP(Path(IP))->get_name());
+	}
 }
